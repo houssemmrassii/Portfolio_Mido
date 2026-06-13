@@ -1,19 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import Player from '@vimeo/player';
 
 const HERO_VIMEO_ID = '1200987833';
 
 export default function Hero({ onReady }) {
   const [isLoaded, setIsLoaded] = useState(false);
+  const iframeRef = useRef(null);
 
-  const markReady = () => {
-    setIsLoaded(true);
-    onReady?.();
-  };
-
-  // Fallback in case the iframe's load event is delayed or blocked
   useEffect(() => {
-    const timeout = setTimeout(markReady, 2500);
-    return () => clearTimeout(timeout);
+    const player = new Player(iframeRef.current);
+    let fired = false;
+
+    const markReady = () => {
+      if (fired) return;
+      fired = true;
+      setIsLoaded(true);
+      onReady?.();
+    };
+
+    // Fires once the video actually starts playing (real readiness, not just iframe load)
+    player.on('play', markReady);
+    player.on('bufferend', markReady);
+
+    // Fallback in case Vimeo's events never fire (slow/blocked connections)
+    const timeout = setTimeout(markReady, 8000);
+
+    return () => {
+      clearTimeout(timeout);
+      player.off('play', markReady);
+      player.off('bufferend', markReady);
+    };
   }, []);
 
   return (
@@ -30,12 +46,12 @@ export default function Hero({ onReady }) {
         ></div>
 
         <iframe
+          ref={iframeRef}
           src={`https://player.vimeo.com/video/${HERO_VIMEO_ID}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479&background=1&autoplay=1&loop=1&muted=1`}
           frameBorder="0"
           allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
           referrerPolicy="strict-origin-when-cross-origin"
           title="final site hero"
-          onLoad={markReady}
           className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100vw] h-[55.81vw] min-w-[179.18vh] min-h-[100vh] transition-opacity duration-700 ease-out ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
         ></iframe>
 
