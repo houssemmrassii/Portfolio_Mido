@@ -34,8 +34,8 @@ export default function Hero({ onReady }) {
     const interactionEvents = ['touchstart', 'click', 'scroll', 'keydown'];
     interactionEvents.forEach((evt) => document.addEventListener(evt, tryPlay, { once: true, passive: true }));
 
-    // Fallback in case the loading events never fire (e.g. cached/instant video)
-    const timeout = setTimeout(markReady, 3000);
+    // Safety net only - if the video errors out entirely, still reveal the site.
+    const timeout = setTimeout(markReady, 15000);
 
     return () => {
       clearTimeout(timeout);
@@ -58,8 +58,8 @@ export default function Hero({ onReady }) {
           loop
           playsInline
           preload="auto"
-          onCanPlay={markReady}
-          onLoadedData={markReady}
+          onCanPlayThrough={markReady}
+          onError={markReady}
           className="absolute inset-0 w-full h-full object-cover pointer-events-none"
         ></video>
 
