@@ -1,9 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const HERO_VIMEO_ID = '1200987833';
 
-export default function Hero() {
+export default function Hero({ onReady }) {
   const [isLoaded, setIsLoaded] = useState(false);
+
+  const markReady = () => {
+    setIsLoaded(true);
+    onReady?.();
+  };
+
+  // Fallback in case the iframe's load event is delayed or blocked
+  useEffect(() => {
+    const timeout = setTimeout(markReady, 2500);
+    return () => clearTimeout(timeout);
+  }, []);
 
   return (
     <section className="relative w-full h-screen overflow-hidden bg-black flex items-center justify-center pt-16 sm:pt-20">
@@ -24,7 +35,7 @@ export default function Hero() {
           allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
           referrerPolicy="strict-origin-when-cross-origin"
           title="final site hero"
-          onLoad={() => setIsLoaded(true)}
+          onLoad={markReady}
           className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100vw] h-[55.81vw] min-w-[179.18vh] min-h-[100vh] transition-opacity duration-700 ease-out ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
         ></iframe>
 

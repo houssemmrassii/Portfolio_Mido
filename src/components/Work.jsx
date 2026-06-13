@@ -69,14 +69,16 @@ export default function Work() {
                   <div className="group order-1 md:order-2">
                     <div className="relative mx-auto max-w-xs">
                       <div className="w-full aspect-[9/16] bg-gradient-to-br from-gray-700 to-gray-900 rounded-2xl overflow-hidden hover:shadow-lg hover:shadow-gold/20 transition-all duration-300 relative">
-                        <iframe
-                          src={embedUrl(project.vimeoId)}
-                          className="w-full h-full"
-                          frameBorder="0"
-                          allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
-                          referrerPolicy="strict-origin-when-cross-origin"
-                          title={project.title}
-                        ></iframe>
+                        {fullscreenIndex !== index && (
+                          <iframe
+                            src={embedUrl(project.vimeoId)}
+                            className="w-full h-full"
+                            frameBorder="0"
+                            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+                            referrerPolicy="strict-origin-when-cross-origin"
+                            title={project.title}
+                          ></iframe>
+                        )}
 
                         {/* Fullscreen Button - Minimalist */}
                         <button
@@ -98,14 +100,16 @@ export default function Work() {
                   <div className="group order-1 md:order-1">
                     <div className="relative mx-auto max-w-xs">
                       <div className="w-full aspect-[9/16] bg-gradient-to-br from-gray-700 to-gray-900 rounded-2xl overflow-hidden hover:shadow-lg hover:shadow-gold/20 transition-all duration-300 relative">
-                        <iframe
-                          src={embedUrl(project.vimeoId)}
-                          className="w-full h-full"
-                          frameBorder="0"
-                          allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
-                          referrerPolicy="strict-origin-when-cross-origin"
-                          title={project.title}
-                        ></iframe>
+                        {fullscreenIndex !== index && (
+                          <iframe
+                            src={embedUrl(project.vimeoId)}
+                            className="w-full h-full"
+                            frameBorder="0"
+                            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+                            referrerPolicy="strict-origin-when-cross-origin"
+                            title={project.title}
+                          ></iframe>
+                        )}
 
                         {/* Fullscreen Button - Minimalist */}
                         <button
