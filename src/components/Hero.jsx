@@ -5,16 +5,20 @@ const HERO_VIMEO_ID = '1200987833';
 
 export default function Hero({ onReady }) {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [needsTap, setNeedsTap] = useState(false);
   const iframeRef = useRef(null);
+  const playerRef = useRef(null);
 
   useEffect(() => {
     const player = new Player(iframeRef.current);
+    playerRef.current = player;
     let fired = false;
 
     const markReady = () => {
       if (fired) return;
       fired = true;
       setIsLoaded(true);
+      setNeedsTap(false);
       onReady?.();
     };
 
@@ -22,8 +26,21 @@ export default function Hero({ onReady }) {
     player.on('play', markReady);
     player.on('bufferend', markReady);
 
-    // Fallback in case Vimeo's events never fire (slow/blocked connections)
-    const timeout = setTimeout(markReady, 8000);
+    // Some browsers (notably iOS Safari with Low Power Mode / Reduce Motion)
+    // silently ignore the autoplay query param even when muted, so kick
+    // playback off via the JS API as well.
+    player.play().catch(() => {});
+
+    // Fallback in case Vimeo's events never fire (slow/blocked connections).
+    // If playback still hasn't started, reveal a tap-to-play control since
+    // autoplay was likely blocked by the browser.
+    const timeout = setTimeout(() => {
+      if (!fired) {
+        setIsLoaded(true);
+        setNeedsTap(true);
+        onReady?.();
+      }
+    }, 4000);
 
     return () => {
       clearTimeout(timeout);
@@ -31,6 +48,13 @@ export default function Hero({ onReady }) {
       player.off('bufferend', markReady);
     };
   }, []);
+
+  const handleTapToPlay = () => {
+    playerRef.current
+      ?.play()
+      .then(() => setNeedsTap(false))
+      .catch(() => {});
+  };
 
   return (
     <section className="relative w-full h-screen overflow-hidden bg-black flex items-center justify-center pt-16 sm:pt-20">
@@ -62,6 +86,21 @@ export default function Hero({ onReady }) {
         {/* Subtle top vignette */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-transparent"></div>
       </div>
+
+      {/* Tap-to-play fallback for browsers that block autoplay (e.g. iOS Low Power Mode) */}
+      {needsTap && (
+        <button
+          onClick={handleTapToPlay}
+          aria-label="Play video"
+          className="absolute z-20 inset-0 flex items-center justify-center"
+        >
+          <span className="flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-black/40 border border-white/60 backdrop-blur-sm">
+            <svg viewBox="0 0 24 24" fill="white" className="w-6 h-6 sm:w-8 sm:h-8 ml-0.5">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </span>
+        </button>
+      )}
 
       {/* Text Content Overlay */}
       <div className="relative z-10 container px-4 sm:px-6 text-center mt-44 sm:mt-56 md:mt-72">
