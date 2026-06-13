@@ -1,6 +1,20 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
-export default function Hero() {
+export default function Hero({ onReady }) {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  const markReady = () => {
+    if (isLoaded) return;
+    setIsLoaded(true);
+    onReady?.();
+  };
+
+  // Fallback in case the loading events never fire (e.g. cached/instant video)
+  useEffect(() => {
+    const timeout = setTimeout(markReady, 3000);
+    return () => clearTimeout(timeout);
+  }, []);
+
   return (
     <section className="relative w-full h-screen overflow-hidden bg-black flex items-center justify-center pt-16 sm:pt-20">
       {/* Full-width Video Background */}
@@ -13,6 +27,8 @@ export default function Hero() {
           loop
           playsInline
           preload="auto"
+          onCanPlay={markReady}
+          onLoadedData={markReady}
           className="absolute inset-0 w-full h-full object-cover"
         ></video>
 
