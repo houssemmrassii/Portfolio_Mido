@@ -64,3 +64,11 @@ p, span, a, button {
   animation: fadeInUp 1.2s ease-out;
 }
 
+/* Hide iOS Safari's built-in "tap to play" overlay on inline videos */
+video::-webkit-media-controls,
+video::-webkit-media-controls-start-playback-button,
+video::-webkit-media-controls-play-button {
+  display: none !important;
+  -webkit-appearance: none;
+}
+
