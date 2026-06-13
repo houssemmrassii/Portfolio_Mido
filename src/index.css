@@ -64,11 +64,17 @@ p, span, a, button {
   animation: fadeInUp 1.2s ease-out;
 }
 
-/* Hide iOS Safari's built-in "tap to play" overlay on inline videos */
+/* Hide Safari's built-in "tap to play" overlay and controls on inline videos */
 video::-webkit-media-controls,
+video::-webkit-media-controls-panel,
+video::-webkit-media-controls-play-button,
 video::-webkit-media-controls-start-playback-button,
-video::-webkit-media-controls-play-button {
+video::-webkit-media-controls-overlay-enclosure,
+video::-webkit-media-controls-overlay-play-button {
   display: none !important;
-  -webkit-appearance: none;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  -webkit-appearance: none !important;
 }
 

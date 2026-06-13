@@ -58,6 +58,10 @@ export default function Hero({ onReady }) {
           loop
           playsInline
           preload="auto"
+          controls={false}
+          disablePictureInPicture
+          disableRemotePlayback
+          controlsList="nodownload nofullscreen noremoteplayback noplaybackrate"
           onCanPlayThrough={markReady}
           onError={markReady}
           className="absolute inset-0 w-full h-full object-cover pointer-events-none"
