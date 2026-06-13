@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 export default function Hero({ onReady }) {
   const [isLoaded, setIsLoaded] = useState(false);
+  const videoRef = useRef(null);
 
   const markReady = () => {
     if (isLoaded) return;
@@ -9,8 +10,18 @@ export default function Hero({ onReady }) {
     onReady?.();
   };
 
-  // Fallback in case the loading events never fire (e.g. cached/instant video)
   useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    // Mobile Safari/Chrome require muted to be set as a JS property (not just
+    // the HTML attribute) before play() for autoplay to be allowed.
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+    video.play().catch(() => {});
+
+    // Fallback in case the loading events never fire (e.g. cached/instant video)
     const timeout = setTimeout(markReady, 3000);
     return () => clearTimeout(timeout);
   }, []);
@@ -18,9 +29,10 @@ export default function Hero({ onReady }) {
   return (
     <section className="relative w-full h-screen overflow-hidden bg-black flex items-center justify-center pt-16 sm:pt-20">
       {/* Full-width Video Background */}
-      <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
+      <div className="absolute inset-0 w-full h-full overflow-hidden">
         {/* Self-hosted video so autoplay/loop works reliably on iOS (muted + playsInline) */}
         <video
+          ref={videoRef}
           src="/videos/hero.mp4"
           autoPlay
           muted
@@ -29,15 +41,15 @@ export default function Hero({ onReady }) {
           preload="auto"
           onCanPlay={markReady}
           onLoadedData={markReady}
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
         ></video>
 
         {/* Multi-layer overlay for premium look */}
         {/* Bottom gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent pointer-events-none"></div>
 
         {/* Subtle top vignette */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-transparent pointer-events-none"></div>
       </div>
 
       {/* Text Content Overlay */}
