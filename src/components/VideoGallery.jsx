@@ -14,28 +14,28 @@ export default function VideoGallery() {
       id: 1,
       title: "REEL ONE",
       category: "DIRECTION",
-      vimeoId: "1200989289",
+      vimeoId: "1200996170",
       year: "2024"
     },
     {
       id: 2,
       title: "REEL TWO",
       category: "COMMERCIAL",
-      vimeoId: "1200989684",
+      vimeoId: "1200996458",
       year: "2024"
     },
     {
       id: 3,
       title: "REEL THREE",
       category: "MOTION DESIGN",
-      vimeoId: "1200989895",
+      vimeoId: "1200996578",
       year: "2023"
     },
     {
       id: 4,
       title: "REEL FOUR",
       category: "LUXURY CAMPAIGN",
-      vimeoId: "1200990157",
+      vimeoId: "1200996814",
       year: "2023"
     },
   ];

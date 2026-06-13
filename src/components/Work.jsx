@@ -13,25 +13,25 @@ export default function Work() {
       title: "GYM ANNIVERSARY / LES MILLS EXPERIENCE",
       description: "Capturing movement, rhythm, and the atmosphere of a Les Mills fitness experience during a gym anniversary celebration.",
       year: "2024",
-      vimeoId: "1200989289"
+      vimeoId: "1200996170"
     },
     {
       title: "IMPACT / TUNISIAN NATIONAL TEAM",
       description: "Highlighting performance, intensity, and the energy behind Impact's partnership with the Tunisian national volleyball team.",
       year: "2024",
-      vimeoId: "1200989684"
+      vimeoId: "1200996458"
     },
     {
       title: "STEAK PASTA / SOUND THROUGH FOOD",
       description: "Focused on texture, motion, and immersive sound design to elevate the sensory experience of the dish.",
       year: "2023",
-      vimeoId: "1200989895"
+      vimeoId: "1200996578"
     },
     {
       title: "HYDRAFACIAL / MACRO DETAILS",
       description: "Combining macro visuals and immersive sound design to highlight texture, precision, and skincare aesthetics.",
       year: "2023",
-      vimeoId: "1200990157"
+      vimeoId: "1200996814"
     },
   ];
 
