@@ -1,29 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-const HERO_VIMEO_ID = '1200987833';
-
-export default function Hero({ onReady }) {
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  const markReady = () => {
-    if (isLoaded) return;
-    setIsLoaded(true);
-    onReady?.();
-  };
-
+export default function Hero() {
   return (
     <section className="relative w-full h-screen overflow-hidden bg-black flex items-center justify-center pt-16 sm:pt-20">
       {/* Full-width Video Background */}
       <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
-        {/* Poster shown instantly, fades out once the video can play */}
-        <div
-          className="absolute inset-0 w-full h-full bg-cover bg-center transition-opacity duration-700 ease-out"
-          style={{
-            backgroundImage: `url(https://vumbnail.com/${HERO_VIMEO_ID}.jpg)`,
-            opacity: isLoaded ? 0 : 1,
-          }}
-        ></div>
-
         {/* Self-hosted video so autoplay/loop works reliably on iOS (muted + playsInline) */}
         <video
           src="/videos/hero.mp4"
@@ -32,9 +13,7 @@ export default function Hero({ onReady }) {
           loop
           playsInline
           preload="auto"
-          onCanPlay={markReady}
-          onPlaying={markReady}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-out ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+          className="absolute inset-0 w-full h-full object-cover"
         ></video>
 
         {/* Multi-layer overlay for premium look */}
