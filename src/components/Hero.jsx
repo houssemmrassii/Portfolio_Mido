@@ -1,106 +1,49 @@
-import React, { useState, useEffect, useRef } from 'react';
-import Player from '@vimeo/player';
+import React, { useState } from 'react';
 
 const HERO_VIMEO_ID = '1200987833';
 
 export default function Hero({ onReady }) {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [needsTap, setNeedsTap] = useState(false);
-  const iframeRef = useRef(null);
-  const playerRef = useRef(null);
 
-  useEffect(() => {
-    const player = new Player(iframeRef.current);
-    playerRef.current = player;
-    let fired = false;
-
-    const markReady = () => {
-      if (fired) return;
-      fired = true;
-      setIsLoaded(true);
-      setNeedsTap(false);
-      onReady?.();
-    };
-
-    // Fires once the video actually starts playing (real readiness, not just iframe load)
-    player.on('play', markReady);
-    player.on('bufferend', markReady);
-
-    // Some browsers (notably iOS Safari with Low Power Mode / Reduce Motion)
-    // silently ignore the autoplay query param even when muted, so kick
-    // playback off via the JS API as well.
-    player.play().catch(() => {});
-
-    // Fallback in case Vimeo's events never fire (slow/blocked connections).
-    // If playback still hasn't started, reveal a tap-to-play control since
-    // autoplay was likely blocked by the browser.
-    const timeout = setTimeout(() => {
-      if (!fired) {
-        setIsLoaded(true);
-        setNeedsTap(true);
-        onReady?.();
-      }
-    }, 4000);
-
-    return () => {
-      clearTimeout(timeout);
-      player.off('play', markReady);
-      player.off('bufferend', markReady);
-    };
-  }, []);
-
-  const handleTapToPlay = () => {
-    playerRef.current
-      ?.play()
-      .then(() => setNeedsTap(false))
-      .catch(() => {});
+  const markReady = () => {
+    if (isLoaded) return;
+    setIsLoaded(true);
+    onReady?.();
   };
 
   return (
     <section className="relative w-full h-screen overflow-hidden bg-black flex items-center justify-center pt-16 sm:pt-20">
       {/* Full-width Video Background */}
       <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
-        {/* Poster shown instantly, fades out once the player is ready */}
+        {/* Poster shown instantly, fades out once the video can play */}
         <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100vw] h-[55.81vw] min-w-[179.18vh] min-h-[100vh] bg-cover bg-center transition-opacity duration-700 ease-out"
+          className="absolute inset-0 w-full h-full bg-cover bg-center transition-opacity duration-700 ease-out"
           style={{
             backgroundImage: `url(https://vumbnail.com/${HERO_VIMEO_ID}.jpg)`,
             opacity: isLoaded ? 0 : 1,
           }}
         ></div>
 
-        <iframe
-          ref={iframeRef}
-          src={`https://player.vimeo.com/video/${HERO_VIMEO_ID}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479&background=1&autoplay=1&loop=1&muted=1`}
-          frameBorder="0"
-          allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
-          referrerPolicy="strict-origin-when-cross-origin"
-          title="final site hero"
-          className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100vw] h-[55.81vw] min-w-[179.18vh] min-h-[100vh] transition-opacity duration-700 ease-out ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
-        ></iframe>
+        {/* Self-hosted video so autoplay/loop works reliably on iOS (muted + playsInline) */}
+        <video
+          src="/videos/hero.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          onCanPlay={markReady}
+          onPlaying={markReady}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-out ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+        ></video>
 
         {/* Multi-layer overlay for premium look */}
         {/* Bottom gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent"></div>
-        
+
         {/* Subtle top vignette */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-transparent"></div>
       </div>
-
-      {/* Tap-to-play fallback for browsers that block autoplay (e.g. iOS Low Power Mode) */}
-      {needsTap && (
-        <button
-          onClick={handleTapToPlay}
-          aria-label="Play video"
-          className="absolute z-20 inset-0 flex items-center justify-center"
-        >
-          <span className="flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-black/40 border border-white/60 backdrop-blur-sm">
-            <svg viewBox="0 0 24 24" fill="white" className="w-6 h-6 sm:w-8 sm:h-8 ml-0.5">
-              <path d="M8 5v14l11-7z" />
-            </svg>
-          </span>
-        </button>
-      )}
 
       {/* Text Content Overlay */}
       <div className="relative z-10 container px-4 sm:px-6 text-center mt-44 sm:mt-56 md:mt-72">
@@ -126,13 +69,12 @@ export default function Hero({ onReady }) {
           </div>
 
           {/* Description */}
-          
+
         </div>
       </div>
 
       {/* Scroll Indicator */}
-    
+
     </section>
   );
 }
-
