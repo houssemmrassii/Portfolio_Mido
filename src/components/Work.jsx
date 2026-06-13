@@ -139,6 +139,17 @@ export default function Work() {
           className="fixed inset-0 z-50 bg-black flex items-center justify-center"
           onClick={handleCloseFullscreen}
         >
+          {/* Close Button */}
+          <button
+            onClick={handleCloseFullscreen}
+            className="absolute top-6 right-6 z-50 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white/10 hover:bg-gold/20 rounded-full transition-all duration-300 group"
+            title="Close"
+          >
+            <svg className="w-6 h-6 text-white group-hover:text-gold transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+
           <div
             className="relative w-screen h-screen flex items-center justify-center"
             onClick={(e) => e.stopPropagation()}
@@ -155,17 +166,6 @@ export default function Work() {
                   referrerPolicy="strict-origin-when-cross-origin"
                   title={projects[fullscreenIndex].title}
                 ></iframe>
-
-                {/* Close Button */}
-                <button
-                  onClick={handleCloseFullscreen}
-                  className="absolute top-4 right-4 w-8 h-8 bg-white/20 hover:bg-white/40 rounded-md flex items-center justify-center transition-all duration-300 backdrop-blur-sm z-50"
-                  title="Close"
-                >
-                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
               </div>
             </div>
           </div>
