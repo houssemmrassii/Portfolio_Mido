@@ -1,17 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
+
+const HERO_VIMEO_ID = '1200987833';
 
 export default function Hero() {
+  const [isLoaded, setIsLoaded] = useState(false);
+
   return (
     <section className="relative w-full h-screen overflow-hidden bg-black flex items-center justify-center pt-16 sm:pt-20">
       {/* Full-width Video Background */}
       <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
+        {/* Poster shown instantly, fades out once the player is ready */}
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100vw] h-[55.81vw] min-w-[179.18vh] min-h-[100vh] bg-cover bg-center transition-opacity duration-700 ease-out"
+          style={{
+            backgroundImage: `url(https://vumbnail.com/${HERO_VIMEO_ID}.jpg)`,
+            opacity: isLoaded ? 0 : 1,
+          }}
+        ></div>
+
         <iframe
-          src="https://player.vimeo.com/video/1200987833?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479&background=1&autoplay=1&loop=1&muted=1"
+          src={`https://player.vimeo.com/video/${HERO_VIMEO_ID}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479&background=1&autoplay=1&loop=1&muted=1`}
           frameBorder="0"
           allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
           referrerPolicy="strict-origin-when-cross-origin"
           title="final site hero"
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100vw] h-[55.81vw] min-w-[179.18vh] min-h-[100vh]"
+          onLoad={() => setIsLoaded(true)}
+          className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100vw] h-[55.81vw] min-w-[179.18vh] min-h-[100vh] transition-opacity duration-700 ease-out ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
         ></iframe>
 
         {/* Multi-layer overlay for premium look */}
