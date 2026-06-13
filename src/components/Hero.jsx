@@ -19,11 +19,30 @@ export default function Hero({ onReady }) {
     video.muted = true;
     video.defaultMuted = true;
     video.playsInline = true;
-    video.play().catch(() => {});
+
+    const tryPlay = () => video.play().catch(() => {});
+    tryPlay();
+
+    // If the browser pauses the video for any reason (tab backgrounded,
+    // OS interruption, blocked autoplay, etc.), keep retrying so it never
+    // gets stuck on a frozen frame.
+    video.addEventListener('pause', tryPlay);
+    document.addEventListener('visibilitychange', tryPlay);
+
+    // Some browsers only allow play() after the first user interaction -
+    // retry then too.
+    const interactionEvents = ['touchstart', 'click', 'scroll', 'keydown'];
+    interactionEvents.forEach((evt) => document.addEventListener(evt, tryPlay, { once: true, passive: true }));
 
     // Fallback in case the loading events never fire (e.g. cached/instant video)
     const timeout = setTimeout(markReady, 3000);
-    return () => clearTimeout(timeout);
+
+    return () => {
+      clearTimeout(timeout);
+      video.removeEventListener('pause', tryPlay);
+      document.removeEventListener('visibilitychange', tryPlay);
+      interactionEvents.forEach((evt) => document.removeEventListener(evt, tryPlay));
+    };
   }, []);
 
   return (
